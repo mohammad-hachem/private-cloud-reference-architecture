@@ -104,6 +104,54 @@ Illustrative logical-data budget = (0.70 × 4 × D) / 3
 
 The 70% assumption reserves space after failure and re-replication. This is an approximate upper planning bound before metadata, imbalance, and other overhead; it is not a configured Ceph fullness threshold or a usable-capacity guarantee.
 
+## OpenNebula HA hooks and fencing
+
+The proposed VM HA workflow uses a **host-state hook** to connect failure detection to recovery. The hook starts the recovery procedure; it is not, by itself, proof that a host is safely fenced.
+
+This concerns recovery of guest VMs after a compute-host failure. OpenNebula front-end HA is a separate control-plane requirement.
+
+### Hook responsibilities
+
+For the intended hook-based implementation, a host transition into the failure state (commonly `ERROR`) triggers a recovery handler. The exact event, hook template, bundled scripts, arguments, and recovery actions must be checked against the selected OpenNebula release.
+
+| Stage | Proposed behavior |
+|---|---|
+| Detect | Receive the failed-host event and identify the affected host and VMs |
+| Recheck | Apply bounded checks to avoid treating a transient monitoring failure as a confirmed power failure |
+| Fence | Request isolation through an independent out-of-band mechanism |
+| Verify | Confirm that the original host can no longer run the affected VMs or access their writable disks |
+| Recover | Allow eligible VMs to be recovered on surviving hosts after capacity and placement checks |
+| Observe | Record hook execution, fencing outcome, recovery actions, and application health |
+
+### Fencing decision
+
+For this reference design, the preferred fencing approach is **verified power-off through the host's management controller**, using a supported mechanism such as IPMI or Redfish. Its management path must remain reachable independently of the failed host's operating system.
+
+A submitted power-off request is insufficient: the recovery handler must establish that isolation succeeded. Disabling a host in the scheduler prevents new placements but does not stop VMs already running there. Ceph replication also does not replace host fencing.
+
+```mermaid
+flowchart TB
+    H["Host failure event"] --> R["Recovery hook: recheck and request fencing"]
+    R --> F{"Isolation confirmed?"}
+    F -->|"No or unknown"| A["Block restart and alert operator"]
+    F -->|"Yes"| C{"Capacity and placement permit recovery?"}
+    C -->|"No"| W["Keep pending and alert operator"]
+    C -->|"Yes"| V["Recover VMs and verify applications"]
+```
+
+This is the intended safety policy, not a claim about the default behavior of every OpenNebula hook. The selected implementation must enforce it.
+
+### Operational safeguards
+
+- Bound retries and timeouts; log failed or missing hook executions.
+- Prevent duplicate recovery actions when events repeat or the control-plane leader changes.
+- Keep fencing credentials outside the repository and restrict management-controller access.
+- Keep a returning host out of service until its VM state has been reconciled.
+- Test loss of the monitoring path while guest VMs remain running.
+- Test an unreachable management controller and rejected fencing credentials: both must block automatic restart until isolation is independently confirmed.
+
+The release-specific hook configuration and fencing integration remain implementation tasks for the personal lab. No employer configuration or recovery script is included.
+
 ## One failure scenario: compute host loss
 
 **Starting point:** storage and management are healthy; disposable guest workloads run across the compute hosts.
@@ -126,6 +174,7 @@ If fencing cannot be confirmed, the proposed policy is to stop automated restart
 | Test | Evidence to capture | Acceptance condition |
 |---|---|---|
 | Compute host loss | Detection, fencing, restart, and application-recovery timestamps | No duplicate VM execution; restart occurs only after safe isolation; application returns within an agreed target |
+| Fencing failure | Hook logs, fencing timeout or rejection, and VM execution state | Automatic restart stays blocked while isolation is unconfirmed; operator receives an alert |
 | Management-path isolation | Host reachability from independent paths and recovery decisions | No unsafe restart based solely on loss of management connectivity |
 | One storage host loss | Ceph health, replica placement, guest I/O errors, latency, and recovery progress | Guest I/O remains available under the chosen policy; replication returns to target after recovery |
 | One monitor loss | Quorum membership and health events | Remaining monitors maintain a majority |
