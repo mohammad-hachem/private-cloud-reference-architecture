@@ -49,6 +49,9 @@ flowchart TB
     M -->|"Control-plane backup"| B
 ```
 
+
+
+
 This is a logical relationship diagram. It does not specify cables, ports, routing, or a complete backup implementation. The management tier controls VM operations; guest disk I/O should not pass through it.
 
 | Layer | Proposed responsibility | Design condition |
