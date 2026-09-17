@@ -3,9 +3,9 @@
 
 Based on my hands-on experience deploying and operating OpenNebula, KVM, and Ceph platforms in production, this reference architecture explains key design decisions for availability, scalability, and safe recovery.
 
-A personal architecture study for a fictional organization that needs a virtual-machine platform with independent compute and storage growth, controlled administrative access, and recovery from a single host failure.
+The example addresses independent compute and storage growth, controlled administrative access, and recovery from a single host failure.
 
-**About this reference design:** The topology and sizing are fictional examples created for this independent study. They do not describe an employer or customer environment or disclose internal configurations or production measurements. This specific example has not been deployed or lab-validated.
+Scope: The topology and sizing are fictional and do not describe any employer or customer environment. Production configurations and measurements are excluded. Validation of this specific reference design remains future work.
 
 ## The design question
 
