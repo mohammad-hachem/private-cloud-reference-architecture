@@ -5,7 +5,7 @@ Based on my hands-on experience deploying and operating OpenNebula, KVM, and Cep
 
 The example addresses independent compute and storage growth, controlled administrative access, and recovery from a single host failure.
 
-Scope: The topology and sizing are fictional and do not describe any employer or customer environment. Production configurations and measurements are excluded. Validation of this specific reference design remains future work.
+**Scope:** The topology and sizing are fictional and do not describe any employer or customer environment. Production configurations and measurements are excluded. Validation of this specific reference design remains future work.
 
 ## The design question
 
