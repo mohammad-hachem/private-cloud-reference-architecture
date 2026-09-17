@@ -1,13 +1,11 @@
 # Private Cloud Reference Architecture
 ## OpenNebula · KVM · Ceph
 
-**Status: this reference design is conceptual and has not been deployed or lab-validated.**
-
-Written from hands-on experience deploying and operating platforms of this type in production. The design here is an independent, fictional study rather than a description of any deployed system.
+Based on my hands-on experience deploying and operating OpenNebula, KVM, and Ceph platforms in production, this reference architecture explains key design decisions for availability, scalability, and safe recovery.
 
 A personal architecture study for a fictional organization that needs a virtual-machine platform with independent compute and storage growth, controlled administrative access, and recovery from a single host failure.
 
-This repository does not describe an employer or customer environment. All topology choices are illustrative. It includes no production measurements or internal configurations, and makes no claim that this specific reference design has been implemented.
+**About this reference design:** The topology and sizing are fictional examples created for this independent study. They do not describe an employer or customer environment or disclose internal configurations or production measurements. This specific example has not been deployed or lab-validated.
 
 ## The design question
 
