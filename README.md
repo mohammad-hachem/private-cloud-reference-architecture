@@ -19,7 +19,7 @@ The proposed answer separates management, compute, and storage, and treats spare
 - Four equal-capacity KVM compute hosts.
 - Five equal-capacity Ceph storage hosts.
 - Three independent management hosts for the proposed OpenNebula control plane.
-- Two network switches with a validated redundant attachment design.
+- Two network switches with redundant host connections; failover behavior to be validated.
 - One failure at a time, starting from a healthy cluster.
 - VM restart after a failed compute host is acceptable; uninterrupted application service is not promised.
 - Backups live outside the primary storage cluster.
