@@ -1,11 +1,13 @@
 # Private Cloud Reference Architecture
 ## OpenNebula · KVM · Ceph
 
-**Status: conceptual design — not deployed or lab-validated.**
+**Status: this reference design is conceptual and has not been deployed or lab-validated.**
+
+Written from hands-on experience deploying and operating platforms of this type in production. The design here is an independent, fictional study rather than a description of any deployed system.
 
 A personal architecture study for a fictional organization that needs a virtual-machine platform with independent compute and storage growth, controlled administrative access, and recovery from a single host failure.
 
-This repository does not describe an employer or customer environment. All topology choices are illustrative. There are no production measurements, internal configurations, or claims of implementation.
+This repository does not describe an employer or customer environment. All topology choices are illustrative. It includes no production measurements or internal configurations, and makes no claim that this specific reference design has been implemented.
 
 ## The design question
 
@@ -121,7 +123,7 @@ If fencing cannot be confirmed, the proposed policy is to stop automated restart
 
 ## Validation plan
 
-**All tests below are proposed. None has been executed.** Run disruptive tests only in an isolated lab with disposable data and an established restoration path.
+**All tests below are proposed for this reference design; none has been executed as part of this study.** Run disruptive tests only in an isolated lab with disposable data and an established restoration path.
 
 | Test | Evidence to capture | Acceptance condition |
 |---|---|---|
